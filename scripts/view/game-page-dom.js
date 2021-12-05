@@ -1,4 +1,5 @@
 const shiftGameEvalInPositiveRange = 1;
+const {sessionStorage} = window;
 const translateEval = {
     0: 'Loss',
     1: 'Tie',
@@ -6,30 +7,29 @@ const translateEval = {
 };
 
 export function createGameTable() {
-    const name = document.cookie.split('=')[1];
-    return `<h2 class="game-intro">${name}! Pick Your Hand!</h2>
-          <table>
-            <tr class="picks"></tr>
-          </table>
-          <div class="countdown"></div>
-          <h2 class="player-pick">Player Pick...</h2>
-          <button class="fill start-page-button" >Back To Start</button>`;
+    const playerName = sessionStorage.getItem('playerName');
+    return `<h2 class="game-intro">${playerName}! Pick Your Hand!</h2>
+            <button class="normal fill">Normal Mode</button>
+            <div class="picks"></div>
+            <div class="countdown"></div>
+            <h2 class="player-pick">VS</h2>
+            <button class="fill start-page-button" >Back To Start</button>`;
 }
 
 function createGameHands(HANDS) {
-    return `<td id="0">${HANDS[0]}</td>
-          <td id="1">${HANDS[1]}</td>
-          <td id="2">${HANDS[2]}</td>
-          <td id="3">${HANDS[3]}</td>
-          <td id="4">${HANDS[4]}</td>`;
+    return `<div id="0">${HANDS[0]}</div>
+            <div id="1">${HANDS[1]}</div>
+            <div id="2">${HANDS[2]}</div>
+            <div id="3">${HANDS[3]}</div>
+            <div id="4">${HANDS[4]}</div>`;
 }
 
 function createStrikeThroughGameHands(HANDS) {
-    return `<td id="0"><s>${HANDS[0]}</s></td>
-          <td id="1"><s>${HANDS[1]}</s></td>
-          <td id="2"><s>${HANDS[2]}</s></td>
-          <td id="3"><s>${HANDS[3]}</s></td>
-          <td id="4"><s>${HANDS[4]}</s></td>`;
+    return `<div id="0"><s>${HANDS[0]}</s></div>
+            <div id="1"><s>${HANDS[1]}</s></div>
+            <div id="2"><s>${HANDS[2]}</s></div>
+            <div id="3"><s>${HANDS[3]}</s></div>
+            <div id="4"><s>${HANDS[4]}</s></div>`;
 }
 
 export function createHistory() {
@@ -64,12 +64,27 @@ function renderStrikeThroughGameHands(HANDS) {
 
 export function renderHistoryEntries(gameEval, playerHand, systemHand, HANDS) {
     const historyEntry = createHistoryEntries(gameEval, playerHand, systemHand, HANDS);
-    const historyEntries = document.querySelector('.game-results').innerHTML;
-    document.querySelector('.game-results').innerHTML = historyEntries + historyEntry;
+    const historyEntries = document.querySelector('.game-results');
+    historyEntries.innerHTML += historyEntry;
 }
 
-export function renderPlayerPick(playerHand) {
-    document.querySelector('.player-pick').innerText = playerHand;
+export function renderHistoryEntriesFromSession(HANDS) {
+  const storedSessionHistory = sessionStorage.getItem('sessionHistory');
+  const sessionHistory = JSON.parse(storedSessionHistory);
+  const historyEntries = document.querySelector('.game-results');
+  sessionHistory.forEach((item) => {
+    const historyEntry = createHistoryEntries(
+      item.gameEval,
+      item.playerHand,
+      item.systemHand,
+      HANDS,
+    );
+    historyEntries.innerHTML += historyEntry;
+  });
+}
+
+export function renderPlayerPick(playerHand, systemHand) {
+    document.querySelector('.player-pick').innerText = `${playerHand} VS ${systemHand}`;
 }
 
 export function blockGameWhileEvaluating(DELAY_MS, INTERVAL_MS, HANDS, playCallBackFn) {

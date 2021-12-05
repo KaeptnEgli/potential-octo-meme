@@ -1,5 +1,7 @@
-import { createGameTable, createHistory, renderGameHands } from './game-page-dom.js';
+import { createGameTable, createHistory, renderGameHands, renderHistoryEntriesFromSession } from './game-page-dom.js';
 import { resolveRankings, getRankingsFromPlayerStats, play, HANDS } from '../controller/game-service.js';
+
+const {sessionStorage} = window;
 
 function createForm() {
     return `<hr>
@@ -16,9 +18,8 @@ function createForm() {
 }
 
 function createStartHeader() {
-    return `<div>
-              <button id="switch-mode" class="fill" type="button">Cahnge To Server Mode</button>
-            </div>
+    return `
+            <button class="switch-mode fill" type="button">Change To Server Mode</button>
             <h1>Rock, Paper, Scissors</h1>
             <h2>Rankings:</h1>
             <div class="ranking"></div>`;
@@ -35,13 +36,8 @@ function mapRankings(rankings) {
 }
 
 async function createRankingsList() {
-    const rankingHtml = await resolveRankings(mapRankings(getRankingsFromPlayerStats()));
+    const rankingHtml = await resolveRankings(mapRankings(await getRankingsFromPlayerStats()));
     return rankingHtml;
-}
-
-export function renderStartHeader() {
-    const startHtml = createStartHeader();
-    document.querySelector('.content-box-top').innerHTML = startHtml;
 }
 
 export async function renderRankings() {
@@ -49,10 +45,32 @@ export async function renderRankings() {
     document.querySelector('.ranking').innerHTML = rankingHtml;
 }
 
+function changeGameMode(contentBoxTop) {
+  const button = contentBoxTop.children[0];
+  if (sessionStorage.getItem('isConnected') === 'true') {
+    sessionStorage.setItem('isConnected', false);
+    button.innerHTML = 'Change To Server Mode';
+  } else {
+    sessionStorage.setItem('isConnected', true);
+    button.innerHTML = 'Change To Local Mode';
+  }
+  contentBoxTop.children[3].innerHTML = '';
+  renderRankings();
+}
+
+export function renderStartHeader() {
+    const startHtml = createStartHeader();
+    const contentBoxTop = document.querySelector('.content-box-top');
+    contentBoxTop.innerHTML = startHtml;
+    contentBoxTop.children[0].addEventListener('click', () => {
+      changeGameMode(contentBoxTop);
+    });
+}
+
 function savePlayerName() {
     const form = document.querySelector('form[name="start-game-form"]');
-    const name = form.elements.name.value;
-    document.cookie = `name=${name}; Secure`;
+    const playerName = form.elements.name.value;
+    sessionStorage.setItem('playerName', playerName);
 }
 
 function renderGamePage() {
@@ -61,10 +79,18 @@ function renderGamePage() {
     const gameHistory = createHistory();
     document.querySelector('.content-box-top').innerHTML = gameHtml;
     document.querySelector('.content-box-bottom').innerHTML = gameHistory;
+    document.querySelector('.normal').addEventListener('click', () => {
+      if (sessionStorage.getItem('normalGame') === 'true') {
+        sessionStorage.setItem('normalGame', false);
+      } else {
+        sessionStorage.setItem('normalGame', true);
+      }
+    });
     document.querySelector('.start-page-button').addEventListener('click', () => {
         window.location.reload();
     });
     document.querySelector('.picks').addEventListener('click', play);
+    renderHistoryEntriesFromSession(HANDS);
     renderGameHands(HANDS);
 }
 

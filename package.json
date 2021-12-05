@@ -22,6 +22,8 @@
   },
   "dependencies": {
     "@web-and-design/eslint-plugin-wed": "^1.0.0",
-    "html-validator-cli": "^7.0.1"
+    "cors": "^2.8.5",
+    "html-validator-cli": "^7.0.1",
+    "node-fetch": "^3.1.0"
   }
 }

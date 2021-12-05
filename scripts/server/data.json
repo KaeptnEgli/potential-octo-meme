@@ -1,0 +1,64 @@
+{
+  "rankings": [
+    {
+      "id": "Stefanie",
+      "win": 10,
+      "lost": 17
+    },
+    {
+      "id": "Anja",
+      "win": 47,
+      "lost": 55
+    },
+    {
+      "id": "Eric",
+      "win": 119,
+      "lost": 25
+    },
+    {
+      "id": "Michael",
+      "win": 42,
+      "lost": 53
+    },
+    {
+      "id": "Arya",
+      "win": 121,
+      "lost": 72
+    },
+    {
+      "id": "Dr. Strange",
+      "win": 114,
+      "lost": 211
+    },
+    {
+      "id": "Legolas",
+      "win": 13,
+      "lost": 5
+    },
+    {
+      "id": "Bax",
+      "win": 3,
+      "lost": 6
+    },
+    {
+      "id": "Klara",
+      "win": 6,
+      "lost": 5
+    },
+    {
+      "id": "Lulu",
+      "win": 5,
+      "lost": 5
+    },
+    {
+      "id": "Nero",
+      "win": 9,
+      "lost": 5
+    },
+    {
+      "id": "Nils",
+      "win": 16,
+      "lost": 111
+    }
+  ]
+}

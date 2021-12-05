@@ -1,5 +1,7 @@
 
 
+Best if you read the Readme here: https://github.com/KaeptnEgli/potential-octo-meme
+
 # Installation:
 <p>I used an Nginx (Version 1.18.0) web server to run the Page. I recommend you to also run the project with Nginx or Apache web server.
 Otherwise you might get some problems with CORS policy and the page won't work.</p>
