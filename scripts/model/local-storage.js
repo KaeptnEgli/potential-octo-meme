@@ -60,6 +60,14 @@ function addScoreToUser(userName, userRecords, gameEval, index) {
     }
 }
 
+function createNewUserScore(userName, gameEval) {
+  if (parseInt(gameEval, 10) === 1) {
+    localStorage.setItem(userName, JSON.stringify({ id: userName, win: 1, lost: 0 }));
+  } else if (parseInt(gameEval, 10) === -1) {
+    localStorage.setItem(userName, JSON.stringify({ id: userName, win: 0, lost: 1 }));
+  }
+}
+
 export function addResultToLocalStorage(gameEval, userName) {
     const userRecords = convertLocalStorageToArray();
     for (let i = 0; i < userRecords.length; i++) {
@@ -67,8 +75,7 @@ export function addResultToLocalStorage(gameEval, userName) {
             addScoreToUser(userName, userRecords, gameEval, i);
             break;
         } else if (i === parseInt(userRecords.length - 1, 10)) {
-            localStorage.setItem(userName, JSON.stringify({ id: userName, win: 0, lost: 0 }));
-            addScoreToUser(userName, userRecords, gameEval, i + 1);
+            createNewUserScore(userName, gameEval);
         }
     }
 }
