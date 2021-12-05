@@ -59,38 +59,40 @@ function evaluateHand(playerName, playerHand, mode) {
 }
 
 function normalGame(playerName, playerHand) {
-  const gameEval = evaluateHand(playerName, playerHand, 3);
-  return playerHand > 2 ? false : gameEval;
+    const gameEval = evaluateHand(playerName, playerHand, 3);
+    return playerHand > 2 ? false : gameEval;
 }
 
 function fullGame(playerName, playerHand) {
-  const gameEval = evaluateHand(playerName, playerHand, 5);
-  return gameEval;
+    const gameEval = evaluateHand(playerName, playerHand, 5);
+    return gameEval;
 }
 
 function requestHandler(request, response) {
-if (request.url === '/favicon.ico') {
-  response.writeHead(200, {'Content-Type': 'image/x-icon'});
-  response.end();
-  return;
-}
-  const parsedURL = new URL(request.url, `http://${request.headers.host}`);
-  response.setHeader('Content-Type', 'application/json');
-  response.setHeader('Access-Control-Allow-Origin', '*');
+    if (request.url === '/favicon.ico') {
+        response.writeHead(200, {
+            'Content-Type': 'image/x-icon',
+        });
+        response.end();
+        return;
+    }
+    const parsedURL = new URL(request.url, `http://${request.headers.host}`);
+    response.setHeader('Content-Type', 'application/json');
+    response.setHeader('Access-Control-Allow-Origin', '*');
 
-  const playerName = parsedURL.searchParams.get('playerName');
-  const playerHand = parsedURL.searchParams.get('playerHand');
-  const gameMode = parsedURL.searchParams.get('mode');
-  let gameResult;
+    const playerName = parsedURL.searchParams.get('playerName');
+    const playerHand = parsedURL.searchParams.get('playerHand');
+    const gameMode = parsedURL.searchParams.get('mode');
+    let gameResult;
 
-  if (gameMode !== undefined && String(gameMode) === 'normal') {
-    gameResult = normalGame(playerName, playerHand);
-  } else {
-    gameResult = fullGame(playerName, playerHand);
-  }
+    if (gameMode !== undefined && String(gameMode) === 'normal') {
+        gameResult = normalGame(playerName, playerHand);
+    } else {
+        gameResult = fullGame(playerName, playerHand);
+    }
 
-  response.statusCode = gameResult ? 200 : 406;
-  response.end(gameResult);
+    response.statusCode = gameResult ? 200 : 406;
+    response.end(gameResult);
 }
 
 const server = http.createServer();

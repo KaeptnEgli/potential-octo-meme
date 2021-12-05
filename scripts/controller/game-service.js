@@ -69,19 +69,19 @@ export function resolveRankings(callback) {
 }
 
 async function createNewDataEntry(gameEval, playerName) {
-  if (gameEval === 1) {
-    await dataService.createEntry({id: playerName, win: 1, lost: 0});
-  } else {
-    await dataService.createEntry({id: playerName, win: 0, lost: 1});
-  }
+    if (gameEval === 1) {
+      await dataService.createEntry({id: playerName, win: 1, lost: 0});
+    } else {
+      await dataService.createEntry({id: playerName, win: 0, lost: 1});
+    }
 }
 
 async function updateDataEntry(gameEval, playerName, playerData) {
-  if (gameEval === 1) {
-   await dataService.updateEntry(playerName, {win: playerData.win + 1});
- } else {
-   await dataService.updateEntry(playerName, {lost: playerData.lost + 1});
- }
+    if (gameEval === 1) {
+     await dataService.updateEntry(playerName, {win: playerData.win + 1});
+   } else {
+     await dataService.updateEntry(playerName, {lost: playerData.lost + 1});
+   }
 }
 
 async function addResultToDatabase(gameEval, playerName) {
@@ -99,16 +99,16 @@ function getGameEval(playerHand, systemHand) {
 }
 
 function addGametoSessionHistory(gameEval, playerHand, systemHand) {
-  const storedSessionHistory = sessionStorage.getItem('sessionHistory');
-  const game = {gameEval, playerHand, systemHand};
-  if (storedSessionHistory === null) {
-    const sessionHistory = [];
+    const storedSessionHistory = sessionStorage.getItem('sessionHistory');
+    const game = {gameEval, playerHand, systemHand};
+    if (storedSessionHistory === null) {
+      const sessionHistory = [];
+      sessionHistory.push(game);
+      sessionStorage.setItem('sessionHistory', JSON.stringify(sessionHistory));
+    }
+    const sessionHistory = JSON.parse(storedSessionHistory);
     sessionHistory.push(game);
     sessionStorage.setItem('sessionHistory', JSON.stringify(sessionHistory));
-  }
-  const sessionHistory = JSON.parse(storedSessionHistory);
-  sessionHistory.push(game);
-  sessionStorage.setItem('sessionHistory', JSON.stringify(sessionHistory));
 }
 
 async function evaluateHand(playerName, playerHand, systemHand) {
@@ -119,16 +119,15 @@ async function evaluateHand(playerName, playerHand, systemHand) {
 }
 
 async function serverEvaluation(playerName, playerHand) {
-  let gameResult;
-  if (sessionStorage.normalGame === 'true') {
-    gameResult = await dataService.evaluateGame(`playerName=${playerName}`, `&playerHand=${playerHand}`, '&mode=normal');
-  } else {
-    gameResult = await dataService.evaluateGame(`playerName=${playerName}`, `&playerHand=${playerHand}`);
-  }
-
-  addResultToDatabase(gameResult.gameEval, playerName);
-  addGametoSessionHistory(gameResult.gameEval, gameResult.playerHand, gameResult.systemHand);
-  renderHistoryEntries(gameResult.gameEval, gameResult.playerHand, gameResult.systemHand, HANDS);
+    let gameResult;
+    if (sessionStorage.normalGame === 'true') {
+      gameResult = await dataService.evaluateGame(`playerName=${playerName}`, `&playerHand=${playerHand}`, '&mode=normal');
+    } else {
+      gameResult = await dataService.evaluateGame(`playerName=${playerName}`, `&playerHand=${playerHand}`);
+    }
+    addResultToDatabase(gameResult.gameEval, playerName);
+    addGametoSessionHistory(gameResult.gameEval, gameResult.playerHand, gameResult.systemHand);
+    renderHistoryEntries(gameResult.gameEval, gameResult.playerHand, gameResult.systemHand, HANDS);
 }
 
 export async function play(event) {
