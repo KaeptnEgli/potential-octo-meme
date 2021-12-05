@@ -24,7 +24,7 @@ The api on stone.dev.ifs.hsr.ch provided those fields:</p>
 
 ## Open Points From Code Review.
 <p>First, thanks for good the reviews! Unfortunately I had a lot of assessments this and last week, so I kind of ran out of time a bit.
-Due to that I could not address some of the points you have mentioned. For example:</p>
+Due to that, I could not address all of the points you have mentioned. For example:</p>
 
 <ul>
     <li>Page reload and the resulting bugs. local-storage.js:26</li>
@@ -52,7 +52,7 @@ To make the api fully working you have to run two commands. One for the json-ser
 
 2. ```bash nodejs ./scripts/server/data.json```
 
-==You have to temporarily disable CORS policy in your browser. Otherwise all request with source localhost will be blocked and the api does not work!==
+<mark>You have to temporarily disable CORS policy in your browser. Otherwise all request with source localhost will be blocked and the api does not word!</mark>
 ___
 
 
