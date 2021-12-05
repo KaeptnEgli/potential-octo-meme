@@ -2,23 +2,57 @@
 
 Best if you read the Readme here: https://github.com/KaeptnEgli/potential-octo-meme
 
-# Installation:
-<p>I used an Nginx (Version 1.18.0) web server to run the Page. I recommend you to also run the project with Nginx or Apache web server.
-Otherwise you might get some problems with CORS policy and the page won't work.</p>
+# Preface:
 
-<p>If you are not familiar with web servers consider one the following links:</p>
+I have renamed the README from the first hand in. I changed it to README_old.md.
 
-**Ubuntu Nginx:**
-[Install And Configure Nginx](https://ubuntu.com/tutorials/install-and-configure-nginx#1-overview)
+## Server and API
 
-**Ubuntu Apache:**
-[Install And Configure Apache](https://ubuntu.com/tutorials/install-and-configure-apache#1-overview)
+<p>I am aware that the task description provides a api you could use. The game evaluation from that api did not really serve my needs.
+The api on stone.dev.ifs.hsr.ch provided those fields:</p>
 
-**Windows XAMPP:**
-[XAMPP For Windows](https://www.apachefriends.org/de/index.html)
+```javascript
+{"choice":"Papier","win":false}
+```
+<p>What I need instead were those:<p>
 
-<p>If you have any problems with your web server configuration or if there is something wrong with the project, please don't hesitate to contact me.</p>
+```javascript
+{"playerHand": 2, "systemHand": 3, "gameEval": -1}
+```
 
+<p>So I decided to write my own api that serves the fields I need. 😅</p>
+
+## Open Points From Code Review.
+<p>First, thanks for good the reviews! Unfortunately I had a lot of assessments this and last week, so I kind of ran out of time a bit.
+Due to that I could not address some of the points you have mentioned. For example:</p>
+
+<ul>
+    <li>Page reload and the resulting bugs. local-storage.js:26</li>
+    <li>My very well written sort function. start-page.dom.js:90</li>
+</ul>
+
+<p>I will definitely fix them for the final assessment!</p>
+
+___
+
+# Server
+## Server Installation
+
+<p>Make sure that you have the json-server module installed. You can install the module very easily with npm:<p>
+
+```bash
+npm install -g json-server
+```
+
+## Start the Server
+
+To make the api fully working you have to run two commands. One for the json-server and on for the node-server that evaluates the game.
+
+1. ```bash json-server --watch ./scripts/server/data.json```
+
+2. ```bash nodejs ./scripts/server/data.json```
+
+==You have to temporarily disable CORS policy in your browser. Otherwise all request with source localhost will be blocked and the api does not work!==
 ___
 
 
@@ -26,7 +60,7 @@ ___
 
 ## npm run all
 
-<p>The command `npm run all` produces three warnings, see ./npm_run_all.png.</p>
+<p>The command `npm run all` produces five warnings now, see ./npm_run_all_2.png.</p>
 
 * The while loop:
 <p>I have to use a while loop because the input parameter is constantly changing. Elements are getting removed with the splice() function.
@@ -37,91 +71,7 @@ This would brake the iterator within a for or for each loop. Please also read th
 </p>
 <p>Change my Mind. 😄☕</p>
 
-## local-storage.js
-<p>I made my comments about clean code in that file in the section below.</p>
+* The no-console:
+<p>Yes, that is the console log from the server which indicated that the server is up and running. What should I say...</p>
 
 ___
-
-
-# Code Documentation
-
-## local-storage.js
-
-<p>This file handles all the interactions with the persistent storage, in this case localStorage. It is the most complex part of my web1 assessment.
-So that you don't have to hard times figuring out what my code does during the peer review, I give you a brief explanation.</p>
-
-**It does four things:**
-
-1. initialize LocalStorage. <br>
-2. convert LocalStorage into an Array and <br>
-3. Sort the Array. <br>
-4. add new Values to the local Storage. <br>
-
-<p>This functionallity is implemented in five functions. All the functions are listed below with a short doc:</p>
-
-### initializeLocalStorage()
-
-<p>Sets the default values you will see in the ranking on the main page. It only sets the values if the localStorage is empty, thus the localStorage won't be reinitialized by every page reload.</p>
-
-### convertLocalStorageToArray()
-
-<p>Converts the JSON data stored in the localStorage into an Javascript array.</p>
-
-### sortPlayers()
-
-<p>I know the code in this function is a bit complex and seems clumsy too. I also aware of that it is possible to write it cleaner with Javascript array functions. I actually tried to rewrite the function with array functions. Unfortunately, I couldn't figure it out anymore on Sunday evening and i just ran out of time. The good thing is.. It works anyway! :D</p>
-
-<p>I will make to code neater and cleaner for the next hand in of the assessment. But for now my dear peer reviewer: you have to deal with my code. As already mentioned I document it to make your life a bit more ease.</p>
-
-<p>The purpose of this function is to create an array that is sorted after the ranking of each individual player.
-The array contains objects with three field: rank, wins, players. Players with the same amount of wins appear in the same object.
-Below you can see a little example of that:</p>
-
-**convertLocalStorageToArray() creates this:**
-
-```javascript
-[
-    {
-        user: "Markus",
-        win: 3,
-        lost: 6,
-    },
-    {
-        user: "Michael",
-        win: 4,
-        lost: 5,
-    },
-    {
-        user: "Lisa",
-        win: 4,
-        lost: 5,
-    },
-];
-```
-
-**sortPlayers() converts the array above to this:**
-
-```javascript
-[
-    {
-        rank: 1,
-        wins: 4,
-        players: ["Michael", "Lisa"],
-    },
-    {
-        rank: 2,
-        wins: 3,
-        players: ["Markus"],
-    },
-];
-```
-
-### addScoreToUser()
-
-<p>Simply adds a loss or a win to the corresponding user in localStorage. Gets called by addResultToLocalStorage(), see below.</p>
-
-### addResultToLocalStorage()
-
-<p>Determines if a player already exists in localStorage or not.
-If the user already exists it just calls addScoreToUser().
-If the player does not yet exists in LocalStorage it adds a new field with the users name an then calls addScoreToUser().</p>
