@@ -9,14 +9,14 @@ sessionStorage.setItem('normalGame', false);
 initializeLocalStorage();
 
 async function startNewRound(event) {
-  await blockGameWhileEvaluating(GAME_DELAY, INTERVAL_MS, HANDS, startNewRound);
-  play(event);
+    await blockGameWhileEvaluating(GAME_DELAY, INTERVAL_MS, HANDS, startNewRound);
+    play(event);
 }
 
 function renderStartPage() {
-  renderStartHeader();
-  renderForm();
-  renderRankings();
+    renderStartHeader();
+    renderForm();
+    renderRankings();
 }
 
 function renderGamePage(event) {

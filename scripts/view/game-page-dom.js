@@ -63,13 +63,13 @@ function renderStrikeThroughGameHands(HANDS) {
 }
 
 export function renderGameTable() {
-  const gameHtml = createGameTable();
-  document.querySelector('.content-box-top').innerHTML = gameHtml;
+    const gameHtml = createGameTable();
+    document.querySelector('.content-box-top').innerHTML = gameHtml;
 }
 
 export function renderHistoryTable() {
-  const gameHistory = createHistory();
-  document.querySelector('.content-box-bottom').innerHTML = gameHistory;
+    const gameHistory = createHistory();
+    document.querySelector('.content-box-bottom').innerHTML = gameHistory;
 }
 
 export function renderHistoryEntries(gameEval, playerHand, systemHand, HANDS) {
@@ -79,19 +79,19 @@ export function renderHistoryEntries(gameEval, playerHand, systemHand, HANDS) {
 }
 
 export function renderHistoryEntriesFromSession(HANDS) {
-  const storedSessionHistory = sessionStorage.getItem('sessionHistory');
-  const sessionHistory = JSON.parse(storedSessionHistory);
-  const historyEntries = document.querySelector('.game-results');
-  if (!storedSessionHistory || sessionHistory === null) return;
-  sessionHistory.forEach((item) => {
-    const historyEntry = createHistoryEntries(
-      item.gameEval,
-      item.playerHand,
-      item.systemHand,
-      HANDS,
-    );
-    historyEntries.innerHTML += historyEntry;
-  });
+    const storedSessionHistory = sessionStorage.getItem('sessionHistory');
+    const sessionHistory = JSON.parse(storedSessionHistory);
+    const historyEntries = document.querySelector('.game-results');
+    if (!storedSessionHistory || sessionHistory === null) return;
+    sessionHistory.forEach((item) => {
+      const historyEntry = createHistoryEntries(
+        item.gameEval,
+        item.playerHand,
+        item.systemHand,
+        HANDS,
+      );
+      historyEntries.innerHTML += historyEntry;
+    });
 }
 
 export function renderPlayerPick(playerHand, systemHand) {
@@ -99,16 +99,16 @@ export function renderPlayerPick(playerHand, systemHand) {
 }
 
 function toggleGameMode() {
-  if (sessionStorage.getItem('normalGame') === 'true') {
-    sessionStorage.setItem('normalGame', false);
-  } else {
-    sessionStorage.setItem('normalGame', true);
-  }
+    if (sessionStorage.getItem('normalGame') === 'true') {
+      sessionStorage.setItem('normalGame', false);
+    } else {
+      sessionStorage.setItem('normalGame', true);
+    }
 }
 
 export function renderEventListeners(playCallBackFn) {
-  document.querySelector('.picks').addEventListener('click', playCallBackFn);
-  document.querySelector('.normal').addEventListener('click', toggleGameMode);
+    document.querySelector('.picks').addEventListener('click', playCallBackFn);
+    document.querySelector('.normal').addEventListener('click', toggleGameMode);
 }
 
 export function blockGameWhileEvaluating(DELAY_MS, INTERVAL_MS, HANDS, playCallBackFn) {
