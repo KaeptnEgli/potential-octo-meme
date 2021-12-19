@@ -1,10 +1,10 @@
-import { sortPlayers, addResultToLocalStorage, convertLocalStorageToArray} from '../model/local-storage.js';
-import { renderPlayerPick, renderHistoryEntries, blockGameWhileEvaluating } from '../view/game-page-dom.js';
+import { sortPlayers, addResultToLocalStorage, convertLocalStorageToArray } from '../model/local-storage.js';
+import { renderPlayerPick, renderHistoryEntries } from '../view/game-page-dom.js';
 import dataService from './data-service.js';
 
 const LOAD_DELAY = 500;
-const GAME_DELAY = 3000;
-const INTERVAL_MS = 1000;
+export const GAME_DELAY = 3000;
+export const INTERVAL_MS = 1000;
 export const HANDS = ['Scissor', 'Rock', 'Paper', 'Lizard', 'Spock'];
 
 const evalLookup = {
@@ -56,10 +56,10 @@ const translateHand = {
 export async function getRankingsFromPlayerStats() {
     const {sessionStorage} = window;
     if (String(sessionStorage.getItem('isConnected')) === 'false') {
-      return sortPlayers(convertLocalStorageToArray(window.localStorage)).slice(0, 11);
+      return sortPlayers(convertLocalStorageToArray(window.localStorage)).slice(0, 10);
     }
       const result = await dataService.getEntries();
-      return sortPlayers(result.slice(0, 11));
+      return sortPlayers(result.slice(0, 10));
 }
 
 export function resolveRankings(callback) {
@@ -101,12 +101,10 @@ function getGameEval(playerHand, systemHand) {
 function addGametoSessionHistory(gameEval, playerHand, systemHand) {
     const storedSessionHistory = sessionStorage.getItem('sessionHistory');
     const game = {gameEval, playerHand, systemHand};
-    if (storedSessionHistory === null) {
-      const sessionHistory = [];
-      sessionHistory.push(game);
-      sessionStorage.setItem('sessionHistory', JSON.stringify(sessionHistory));
+    let sessionHistory = [];
+    if (storedSessionHistory !== 'null') {
+      sessionHistory = JSON.parse(storedSessionHistory);
     }
-    const sessionHistory = JSON.parse(storedSessionHistory);
     sessionHistory.push(game);
     sessionStorage.setItem('sessionHistory', JSON.stringify(sessionHistory));
 }
@@ -136,7 +134,6 @@ export async function play(event) {
       const systemHand = Math.floor(Math.random() * 5);
       const playerName = sessionStorage.getItem('playerName');
       renderPlayerPick(HANDS[playerHandIndex], HANDS[systemHand]);
-      await blockGameWhileEvaluating(GAME_DELAY, INTERVAL_MS, HANDS, play);
       if (sessionStorage.isConnected === 'false') {
         await evaluateHand(playerName, playerHandIndex, systemHand);
       } else {

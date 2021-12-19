@@ -47,6 +47,7 @@ async function createEntry(entry) {
 async function updateEntry(id, value) {
     return patchJson(rankingsRESTServerURL + rankingRoute + id, value);
 }
+
 export default {
     getEntries,
     evaluateGame,

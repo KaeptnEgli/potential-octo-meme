@@ -1,5 +1,5 @@
-import { createGameTable, createHistory, renderGameHands, renderHistoryEntriesFromSession } from './game-page-dom.js';
-import { resolveRankings, getRankingsFromPlayerStats, play, HANDS } from '../controller/game-service.js';
+import { createGameTable, createHistory, renderGameHands, renderHistoryEntriesFromSession, blockGameWhileEvaluating } from './game-page-dom.js';
+import { resolveRankings, getRankingsFromPlayerStats, play, HANDS, GAME_DELAY, INTERVAL_MS } from '../controller/game-service.js';
 
 const {sessionStorage} = window;
 
@@ -70,10 +70,19 @@ export function renderStartHeader() {
 function savePlayerName() {
     const form = document.querySelector('form[name="start-game-form"]');
     const playerName = form.elements.name.value;
-    sessionStorage.setItem('playerName', playerName);
+    if (sessionStorage.getItem('playerName') !== playerName) {
+      sessionStorage.setItem('sessionHistory', null);
+      sessionStorage.setItem('playerName', playerName);
+    }
 }
 
-function renderGamePage() {
+async function startNewRound(event) {
+  await blockGameWhileEvaluating(GAME_DELAY, INTERVAL_MS, HANDS, startNewRound);
+  play(event);
+}
+
+function renderGamePage(event) {
+    event.preventDefault();
     savePlayerName();
     const gameHtml = createGameTable();
     const gameHistory = createHistory();
@@ -89,7 +98,7 @@ function renderGamePage() {
     document.querySelector('.start-page-button').addEventListener('click', () => {
         window.location.reload();
     });
-    document.querySelector('.picks').addEventListener('click', play);
+    document.querySelector('.picks').addEventListener('click', startNewRound);
     renderHistoryEntriesFromSession(HANDS);
     renderGameHands(HANDS);
 }

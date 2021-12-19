@@ -51,7 +51,7 @@ function createHistoryEntries(gameEval, playerHand, systemHand, HANDS) {
             <td>${translateEval[gameEval + shiftGameEvalInPositiveRange]}</td>
             <td>${HANDS[playerHand]}</td>
             <td>${HANDS[systemHand]}</td>
-          </tr>`;
+            </tr>`;
 }
 
 export function renderGameHands(HANDS) {
@@ -72,6 +72,7 @@ export function renderHistoryEntriesFromSession(HANDS) {
   const storedSessionHistory = sessionStorage.getItem('sessionHistory');
   const sessionHistory = JSON.parse(storedSessionHistory);
   const historyEntries = document.querySelector('.game-results');
+  if (!storedSessionHistory || sessionHistory === null) return;
   sessionHistory.forEach((item) => {
     const historyEntry = createHistoryEntries(
       item.gameEval,
@@ -88,19 +89,21 @@ export function renderPlayerPick(playerHand, systemHand) {
 }
 
 export function blockGameWhileEvaluating(DELAY_MS, INTERVAL_MS, HANDS, playCallBackFn) {
+    const picks = document.querySelector('.picks');
+    const countdown = document.querySelector('.countdown');
     return new Promise((resolve) => {
         let timeLeft = DELAY_MS / 1000;
-        document.querySelector('.picks').removeEventListener('click', playCallBackFn);
+        picks.removeEventListener('click', playCallBackFn);
         renderStrikeThroughGameHands(HANDS);
         const blockCountDown = setInterval(() => {
             if (timeLeft <= 0) {
                 renderGameHands(HANDS);
-                document.querySelector('.countdown').innerText = '';
-                document.querySelector('.picks').addEventListener('click', playCallBackFn);
+                countdown.innerText = '';
+                picks.addEventListener('click', playCallBackFn);
                 clearInterval(blockCountDown);
                 resolve();
             } else {
-                document.querySelector('.countdown').textContent = timeLeft;
+                countdown.textContent = timeLeft;
                 timeLeft--;
             }
         }, INTERVAL_MS);
