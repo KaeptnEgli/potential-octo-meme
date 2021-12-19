@@ -6,7 +6,7 @@ const translateEval = {
     2: 'Win',
 };
 
-export function createGameTable() {
+function createGameTable() {
     const playerName = sessionStorage.getItem('playerName');
     return `<h2 class="game-intro">${playerName}! Pick Your Hand!</h2>
             <button class="normal fill">Normal Mode</button>
@@ -32,7 +32,7 @@ function createStrikeThroughGameHands(HANDS) {
             <div id="4"><s>${HANDS[4]}</s></div>`;
 }
 
-export function createHistory() {
+function createHistory() {
     return `<hr>
           <h3>History</h3>
           <table class="history">
@@ -62,6 +62,16 @@ function renderStrikeThroughGameHands(HANDS) {
     document.querySelector('.picks').innerHTML = createStrikeThroughGameHands(HANDS);
 }
 
+export function renderGameTable() {
+  const gameHtml = createGameTable();
+  document.querySelector('.content-box-top').innerHTML = gameHtml;
+}
+
+export function renderHistoryTable() {
+  const gameHistory = createHistory();
+  document.querySelector('.content-box-bottom').innerHTML = gameHistory;
+}
+
 export function renderHistoryEntries(gameEval, playerHand, systemHand, HANDS) {
     const historyEntry = createHistoryEntries(gameEval, playerHand, systemHand, HANDS);
     const historyEntries = document.querySelector('.game-results');
@@ -86,6 +96,19 @@ export function renderHistoryEntriesFromSession(HANDS) {
 
 export function renderPlayerPick(playerHand, systemHand) {
     document.querySelector('.player-pick').innerText = `${playerHand} VS ${systemHand}`;
+}
+
+function toggleGameMode() {
+  if (sessionStorage.getItem('normalGame') === 'true') {
+    sessionStorage.setItem('normalGame', false);
+  } else {
+    sessionStorage.setItem('normalGame', true);
+  }
+}
+
+export function renderEventListeners(playCallBackFn) {
+  document.querySelector('.picks').addEventListener('click', playCallBackFn);
+  document.querySelector('.normal').addEventListener('click', toggleGameMode);
 }
 
 export function blockGameWhileEvaluating(DELAY_MS, INTERVAL_MS, HANDS, playCallBackFn) {

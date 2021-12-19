@@ -50,7 +50,7 @@ To make the api fully working you have to run two commands. One for the json-ser
 
 1. ```bash json-server --watch ./scripts/server/data.json```
 
-2. ```bash nodejs ./scripts/server/data.json```
+2. ```bash nodejs ./scripts/server/server.js```
 
 <mark>You have to temporarily disable CORS policy in your browser. Otherwise all request with source localhost will be blocked and the api does not word!</mark>
 ___

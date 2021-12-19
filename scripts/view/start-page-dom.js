@@ -1,5 +1,4 @@
-import { createGameTable, createHistory, renderGameHands, renderHistoryEntriesFromSession, blockGameWhileEvaluating } from './game-page-dom.js';
-import { resolveRankings, getRankingsFromPlayerStats, play, HANDS, GAME_DELAY, INTERVAL_MS } from '../controller/game-service.js';
+import {resolveRankings, getRankingsFromPlayerStats} from '../controller/game-service.js';
 
 const {sessionStorage} = window;
 
@@ -67,44 +66,16 @@ export function renderStartHeader() {
     });
 }
 
-function savePlayerName() {
+export function renderForm() {
+    const startHtml = createForm();
+    document.querySelector('.content-box-bottom').innerHTML = startHtml;
+}
+
+export function savePlayerName() {
     const form = document.querySelector('form[name="start-game-form"]');
     const playerName = form.elements.name.value;
     if (sessionStorage.getItem('playerName') !== playerName) {
       sessionStorage.setItem('sessionHistory', null);
       sessionStorage.setItem('playerName', playerName);
     }
-}
-
-async function startNewRound(event) {
-  await blockGameWhileEvaluating(GAME_DELAY, INTERVAL_MS, HANDS, startNewRound);
-  play(event);
-}
-
-function renderGamePage(event) {
-    event.preventDefault();
-    savePlayerName();
-    const gameHtml = createGameTable();
-    const gameHistory = createHistory();
-    document.querySelector('.content-box-top').innerHTML = gameHtml;
-    document.querySelector('.content-box-bottom').innerHTML = gameHistory;
-    document.querySelector('.normal').addEventListener('click', () => {
-      if (sessionStorage.getItem('normalGame') === 'true') {
-        sessionStorage.setItem('normalGame', false);
-      } else {
-        sessionStorage.setItem('normalGame', true);
-      }
-    });
-    document.querySelector('.start-page-button').addEventListener('click', () => {
-        window.location.reload();
-    });
-    document.querySelector('.picks').addEventListener('click', startNewRound);
-    renderHistoryEntriesFromSession(HANDS);
-    renderGameHands(HANDS);
-}
-
-export function renderForm() {
-    const startHtml = createForm();
-    document.querySelector('.content-box-bottom').innerHTML = startHtml;
-    document.querySelector('form[name="start-game-form"]').addEventListener('submit', renderGamePage);
 }
